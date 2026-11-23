@@ -1,0 +1,4 @@
+Model,MAE,RMSE,Bias
+Chronos-2 calendar LoRA,7.7173247,11.076659,0.6131658
+TCN from scratch,9.021771,11.424014,-6.331983
+Frozen 50/50 ensemble,7.481721,9.899014,-2.8594089

@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.ipynb linguist-documentation
+*.safetensors binary
+*.pt binary
+*.parquet binary
+*.png binary

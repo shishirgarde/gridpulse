@@ -1,0 +1,22 @@
+{
+  "base_model": "amazon/chronos-2",
+  "context_length": 56,
+  "prediction_length": 7,
+  "weather_columns": [
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "temperature_2m_mean",
+    "relative_humidity_2m_mean",
+    "apparent_temperature_max",
+    "precipitation_sum"
+  ],
+  "calendar_columns": [
+    "year_sin",
+    "year_cos",
+    "week_sin",
+    "week_cos"
+  ],
+  "training_windows": 733,
+  "seed": 42,
+  "training_end": "2023-12-31"
+}

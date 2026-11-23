@@ -1,0 +1,21 @@
+{
+  "project": "GridPulse P10",
+  "base_model": "amazon/chronos-2",
+  "context_length": 56,
+  "prediction_length": 7,
+  "training_end": "2023-12-31",
+  "validation_year": 2024,
+  "validation_pairs": 2520,
+  "finetuning": {
+    "method": "LoRA",
+    "rank": 8,
+    "alpha": 16,
+    "steps": 200,
+    "learning_rate": 1e-05
+  },
+  "validation_mae_mu": {
+    "zero_shot_weather": 6.9276,
+    "lora_weather_200": 6.8847,
+    "lora_calendar_200": 6.8693
+  }
+}

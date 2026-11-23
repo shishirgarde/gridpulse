@@ -1,0 +1,42 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Logs and local runtime state
+*.log
+dashboard.stdout.log
+dashboard.stderr.log
+data/dashboard_actuals.json
+data/dashboard_actuals.tmp
+data/forecasts/*.tmp
+
+# Raw / bulky data (see data/README.md for sources)
+data/raw/
+data/interim/
+data/*.zip
+*.pkl
+
+# Local model downloads and experimental checkpoints
+downloads/
+.cache/
+models/chronos2_cpu_benchmark/
+models/chronos2_forecast_weather_200/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

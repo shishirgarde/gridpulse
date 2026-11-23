@@ -1,0 +1,31 @@
+{
+  "base_model": "amazon/chronos-2",
+  "context_length": 56,
+  "prediction_length": 7,
+  "weather_columns": [
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "temperature_2m_mean",
+    "relative_humidity_2m_mean",
+    "apparent_temperature_max",
+    "precipitation_sum"
+  ],
+  "calendar_columns": [
+    "year_sin",
+    "year_cos",
+    "week_sin",
+    "week_cos"
+  ],
+  "training_windows": 733,
+  "seed": 42,
+  "training_end": "2023-12-31",
+  "finetune_mode": "lora",
+  "lora_rank": 8,
+  "lora_alpha": 16,
+  "learning_rate": 1e-05,
+  "batch_size": 11,
+  "num_steps": 20,
+  "min_past": 56,
+  "train_windows_file": "gridpulse_chronos2_windows_v1.pkl",
+  "chronos_version": "2.3.2"
+}

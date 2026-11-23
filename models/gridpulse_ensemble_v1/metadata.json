@@ -1,0 +1,20 @@
+{
+  "project": "GridPulse",
+  "version": "ensemble_v1",
+  "models": [
+    "Chronos-2 calendar LoRA",
+    "TCN trained from scratch"
+  ],
+  "ensemble_weights": {
+    "chronos2": 0.5,
+    "tcn": 0.5
+  },
+  "history_length": 56,
+  "prediction_length": 7,
+  "validation_year": 2024,
+  "validation_origins": 360,
+  "validation_mae_mu": 6.0547,
+  "validation_rmse_mu": 8.119,
+  "weather_source": "Open-Meteo GFS Previous Runs",
+  "weather_limitation": "Fixed-lead historical forecasts; exact operational availability not verified."
+}

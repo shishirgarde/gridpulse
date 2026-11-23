@@ -1,0 +1,15 @@
+{
+  "endpoint": "https://previous-runs-api.open-meteo.com/v1/forecast?latitude=28.6139&longitude=77.209&start_date=2024-06-01&end_date=2024-06-07&hourly=temperature_2m_previous_day1%2Ctemperature_2m_previous_day2%2Ctemperature_2m_previous_day3%2Ctemperature_2m_previous_day4%2Ctemperature_2m_previous_day5%2Ctemperature_2m_previous_day6%2Ctemperature_2m_previous_day7&models=gfs_global&timezone=Asia%2FKolkata",
+  "requested_model": "gfs_global",
+  "requested_coordinates": [
+    28.6139,
+    77.209
+  ],
+  "returned_coordinates": [
+    28.64302,
+    77.22656
+  ],
+  "timezone": "Asia/Kolkata",
+  "forecast_type": "fixed_lead_previous_runs",
+  "note": "Not guaranteed to represent one forecast initialization"
+}
