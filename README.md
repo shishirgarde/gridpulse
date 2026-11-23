@@ -2,8 +2,7 @@
 
 **Seven-day electricity demand forecasts for Delhi — from raw grid reports to a live, self-scoring forecast service.**
 
-<!-- Replace YOUR-GITHUB-USERNAME after creating the repository -->
-[![CI](https://github.com/YOUR-GITHUB-USERNAME/gridpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR-GITHUB-USERNAME/gridpulse/actions/workflows/ci.yml)
+[![CI](https://github.com/shishirgarde/gridpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/shishirgarde/gridpulse/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 [![Live dashboard](https://img.shields.io/badge/live-dashboard-2a78d6)](https://shishir-garde--gridpulse-dashboard.us-east.modal.run/#overview)
@@ -156,7 +155,7 @@ gridpulse/
 Requires Python 3.11 or 3.12.
 
 ```bash
-git clone https://github.com/YOUR-GITHUB-USERNAME/gridpulse.git
+git clone https://github.com/shishirgarde/gridpulse.git
 cd gridpulse
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 ```
