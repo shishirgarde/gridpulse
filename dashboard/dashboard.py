@@ -1,5 +1,3 @@
-import csv
-import io
 import json
 import math
 import os
@@ -17,10 +15,10 @@ ROOT = Path(__file__).resolve().parent  # dashboard/ (holds web/)
 PROJECT = ROOT.parent
 DATA_ROOT = Path(os.getenv("GRIDPULSE_DATA_DIR", str(PROJECT / "data")))
 sys.path.insert(0, str(PROJECT / "src"))
+from gridpulse.grid_india import fetch_observations as fetch_grid_india_observations  # noqa: E402
 from gridpulse.gridpulse_client import GridPulseClient  # noqa: E402  (after sys.path setup)
 
 load_dotenv(PROJECT / ".env")
-FEED = "https://raw.githubusercontent.com/Deducinnamoroll/Grid-Sentinel/main/Dataset/study3_states.csv"
 LOCK = threading.Lock()
 
 
@@ -78,26 +76,7 @@ def latest():
 
 
 def fetch_observations():
-    response = requests.get(FEED, timeout=60)
-    response.raise_for_status()
-    observations = {}
-    for row in csv.DictReader(io.StringIO(response.text)):
-        if row["state"].strip().lower() == "delhi":
-            day = date.fromisoformat(row["date"][:10])
-            value = finite(row["energy_met_mu"])
-            if value < 0 or (day in observations and observations[day] != value):
-                raise ValueError("The Delhi feed contains invalid or conflicting observations.")
-            observations[day] = value
-    if not observations:
-        raise ValueError("No Delhi observations were found in the electricity feed.")
-    folder = DATA_ROOT
-    folder.mkdir(parents=True, exist_ok=True)
-    cache = {"fetched_at_utc": datetime.now(timezone.utc).isoformat(),
-             "observations": {day.isoformat(): value for day, value in observations.items()}}
-    temporary = folder / "dashboard_actuals.tmp"
-    temporary.write_text(json.dumps(cache, allow_nan=False), encoding="utf-8")
-    temporary.replace(folder / "dashboard_actuals.json")
-    return observations
+    return fetch_grid_india_observations(DATA_ROOT)
 
 
 def comparison(today=None, horizon=None):
@@ -141,7 +120,8 @@ def comparison(today=None, horizon=None):
     errors = [abs(row["error_mu"]) for row in rows if row["error_mu"] is not None]
     return {"rows": rows, "scored_days": len(errors),
             "mae_mu": sum(errors)/len(errors) if errors else None,
-            "actuals_fetched_at_utc": fetched, "archive_count": len(records)}
+            "actuals_fetched_at_utc": fetched, "archive_count": len(records),
+            "latest_actual_date": max(observations, default=None)}
 
 
 def refresh():

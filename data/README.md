@@ -1,12 +1,13 @@
 # Data
 
-Everything here is **Delhi-only and derived**. Raw multi-state source files are not redistributed; fetch them from the original publishers if you want to re-run notebooks 01 and 07 from scratch.
+Committed data here is **Delhi-only and derived**. Raw multi-state source files are not redistributed; fetch them from the original publishers if you want to re-run notebooks 01 and 07 from scratch.
 
 ## Sources
 
 | Source | Period | Used for | Where to get it |
 |---|---|---|---|
-| Grid-India daily Power Supply Position reports, via the **Grid-Sentinel** dataset (`Dataset/study3_states.csv`) | 2018-12-31 → present | Dataset v2: training, validation, external test, and the live feed | https://github.com/Deducinnamoroll/Grid-Sentinel |
+| Grid-India daily Power Supply Position reports, via the **Grid-Sentinel** dataset (`Dataset/study3_states.csv`) | 2018-12-31 → Nov 2026 | Dataset v2: training, validation, and external test | https://github.com/Deducinnamoroll/Grid-Sentinel |
+| Grid-India official Daily PSP listing API and XLS reports | live | Direct Delhi energy-met ingestion for the dashboard and forecasts | https://grid-india.in/en/reports/daily-psp-report |
 | Hunt & Bloomfield (2025), quality-controlled state-level daily demand and ERA5 meteorology (`corrected_daily_energy_met_MU.csv`, `NCT_of_Delhi.csv`, …) | 2013 → Apr 2024 | Dataset v1: notebooks 01–06 | https://doi.org/10.5281/zenodo.14983361, saved to `data/raw/` |
 | Open-Meteo **Previous Runs** API (GFS) | Apr 2021 → present | Historical 1–7 day temperature forecasts without look-ahead | https://open-meteo.com/en/docs/previous-runs-api |
 | Open-Meteo historical archive | 2019 → present | Observed weather for analysis | https://open-meteo.com/en/docs/historical-weather-api |
@@ -42,3 +43,10 @@ Immutable JSON archives of live forecasts: origin, issue time, the 56 input dema
 
 - **MU** (million units) = GWh. *Energy met* is the energy actually supplied, which can be lower than unconstrained demand during shortages.
 - Missing days stay missing. Nothing is interpolated, and any window with a gap is excluded.
+
+## Local runtime cache (not committed)
+
+`dashboard_actuals.json` contains official observations and their report URLs, modification
+times, file IDs, and content hashes. `grid_india_reports/` retains the downloaded raw XLS
+versions for audit. These are populated by the dashboard's actuals refresh; on Modal they
+live in the persistent Volume rather than requiring any local machine.

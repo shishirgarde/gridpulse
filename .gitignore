@@ -21,6 +21,7 @@ dashboard.stdout.log
 dashboard.stderr.log
 data/dashboard_actuals.json
 data/dashboard_actuals.tmp
+data/grid_india_reports/
 data/forecasts/*.tmp
 
 # Raw / bulky data (see data/README.md for sources)

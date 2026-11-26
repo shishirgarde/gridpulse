@@ -2,29 +2,62 @@
 
 Deploy: modal deploy deploy/modal_dashboard.py
 Seed archives / force a run: modal run deploy/modal_dashboard.py --seed --refresh
+Verify official source without writing the Volume: modal run deploy/modal_dashboard.py --check-source
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import modal
 
 LOCAL_ROOT = Path(__file__).resolve().parents[1]  # repository root
+SOURCE_REGION = "ap-south"
 app = modal.App("gridpulse-dashboard")
 volume = modal.Volume.from_name("gridpulse-dashboard-history", create_if_missing=True)
 image = (
     modal.Image.debian_slim(python_version="3.12")
-    .pip_install("requests>=2.32,<3", "python-dotenv>=1,<2", "tzdata", "fastapi[standard]")
+    .pip_install("requests>=2.32,<3", "python-dotenv>=1,<2", "tzdata", "fastapi[standard]",
+                 "xlrd>=2.0.1,<3")
     .env({"GRIDPULSE_DATA_DIR": "/history", "PYTHONPATH": "/app/dashboard:/app/src"})
     .add_local_file(LOCAL_ROOT / "dashboard" / "dashboard.py", "/app/dashboard/dashboard.py")
     .add_local_dir(LOCAL_ROOT / "dashboard" / "web", "/app/dashboard/web")
     .add_local_file(LOCAL_ROOT / "src" / "gridpulse" / "__init__.py", "/app/src/gridpulse/__init__.py")
     .add_local_file(LOCAL_ROOT / "src" / "gridpulse" / "gridpulse_client.py", "/app/src/gridpulse/gridpulse_client.py")
+    .add_local_file(LOCAL_ROOT / "src" / "gridpulse" / "grid_india.py", "/app/src/gridpulse/grid_india.py")
 )
+
+
+@app.function(image=image, timeout=900, region=SOURCE_REGION)
+def verify_source():
+    from tempfile import TemporaryDirectory
+
+    from gridpulse.grid_india import fetch_observations
+
+    today = datetime.now(ZoneInfo("Asia/Kolkata")).date()
+    with TemporaryDirectory() as folder:
+        root = Path(folder)
+        observations = fetch_observations(root, today)
+        latest_day = max(observations)
+        expected = {latest_day - timedelta(days=offset) for offset in range(56)}
+        if set(observations) != expected or not today - timedelta(days=4) <= latest_day < today:
+            raise ValueError("Grid-India must supply 56 consecutive, current demand observations.")
+        if fetch_observations(root, today) != observations:
+            raise ValueError("Grid-India observations changed during the cache verification.")
+        return {
+            "status": "ok",
+            "observation_count": len(observations),
+            "first_day": min(observations).isoformat(),
+            "latest_day": latest_day.isoformat(),
+            "recent_actuals_mu": {
+                day.isoformat(): observations[day] for day in sorted(observations)[-7:]
+            },
+            "raw_report_count": len(list((root / "grid_india_reports").glob("*.xls"))),
+        }
 
 
 @app.function(
     image=image,
+    region=SOURCE_REGION,
     volumes={"/history": volume},
     secrets=[modal.Secret.from_name("gridpulse-dashboard-proxy")],
     schedule=modal.Cron("30 14 * * *", timezone="Asia/Kolkata"),
@@ -47,9 +80,9 @@ def daily_refresh():
     try:
         record = dashboard.refresh()
         volume.commit()
-    except Exception:
+    except Exception as exc:
         volume.commit()
-        raise RuntimeError("Daily GridPulse refresh failed; the prior archive is retained.") from None
+        raise RuntimeError("Daily GridPulse refresh failed; the prior archive is retained.") from exc
     return {"status": "updated", "forecast_origin": record["forecast_origin"],
             "issued_at_utc": record["issued_at_utc"], "prediction_count": len(record["predictions"])}
 
@@ -110,7 +143,9 @@ def web():
 
 
 @app.local_entrypoint()
-def main(seed: bool = False, refresh: bool = False):
+def main(seed: bool = False, refresh: bool = False, check_source: bool = False):
+    if check_source:
+        print(verify_source.remote())
     if seed:
         with volume.batch_upload() as batch:
             for path in (LOCAL_ROOT / "data" / "forecasts").glob("gridpulse_*.json"):

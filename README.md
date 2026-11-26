@@ -48,7 +48,7 @@ The two components fail in opposite directions — Chronos-2 slightly over-forec
 ```mermaid
 flowchart LR
     subgraph Sources
-        GS["Grid-Sentinel feed<br/>(Grid-India daily reports)"]
+        GS["Grid-India official API<br/>Daily PSP XLS reports"]
         OM["Open-Meteo GFS<br/>7-day temperature forecast"]
     end
     subgraph Modal["Modal (serverless)"]

@@ -69,7 +69,10 @@ async function loadHistory() {
       });
       byId('history-rows').append(tr);
     });
-    byId('history-status').textContent = `${data.archive_count} saved forecast(s) · Actuals retrieved: ${stamp(data.actuals_fetched_at_utc)}`;
+    byId('history-status').textContent = `${data.archive_count} saved forecast(s) · Actuals retrieved: ${stamp(data.actuals_fetched_at_utc)} · Latest reported day: ${data.latest_actual_date ? day(data.latest_actual_date) : 'None'}`;
+    if (data.latest_actual_date && data.latest_actual_date < data.rows.at(-1).date) {
+      byId('history-status').textContent += ' · Newer actuals are not yet in the saved Grid-India reports.';
+    }
     byId('history-metrics').textContent = data.scored_days ? `Observed 7-day MAE: ${number(data.mae_mu)} MU · ${data.scored_days}/7 matched days · This small live sample is separate from holdout MAE.` : '0/7 matched days · Live MAE will appear once prior forecasts and reported actuals overlap.';
     historyChart(data.rows);
   } catch (error) {

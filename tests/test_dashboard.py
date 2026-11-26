@@ -70,6 +70,7 @@ def test_comparison_only_scores_forecasts_issued_before_the_target_day(dashboard
     assert rows["2026-11-16"]["predicted_mu"] == 100
     assert result["scored_days"] == 6
     assert result["mae_mu"] == pytest.approx(4.0)
+    assert result["latest_actual_date"] == "2026-11-21"
 
     only_d3 = dashboard.comparison(today=date(2026, 11, 22), horizon=3)
     assert only_d3["scored_days"] == 1
